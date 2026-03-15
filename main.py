@@ -12,7 +12,7 @@ url = f"https://newsapi.org/v2/everything?q=ai&apiKey={api_key}"
 recognizer = sr.Recognizer()
 
 
-# speech function (reinitializes engine every time to avoid macOS freeze)
+# speech function
 def speak(text):
     print("Shanana:", text)
     engine = pytt.init(driverName="nsss")
@@ -22,26 +22,37 @@ def speak(text):
     engine.runAndWait()
 
 
+active = False
+
 if __name__ == "__main__":
 
-    speak("Hello I'm Shanana, your virtual A I assistant , say shanana to wake me up")
+    speak("Hello I'm Shanana, your virtual A I assistant..... say shanana to wake me up")
 
     while True:
         try:
-            # Wake word listening
-            with sr.Microphone() as source:
-                print("Say something!")
-                recognizer.adjust_for_ambient_noise(source, duration=0.5)
-                audio = recognizer.listen(source)
 
-            word = recognizer.recognize_google(audio).lower()
-            print("Shanana thinks you said:", word)
+            # slep mode
+            if not active:
+                with sr.Microphone() as source:
+                    print("Say something!")
+                    recognizer.adjust_for_ambient_noise(source, duration=0.5)
+                    audio = recognizer.listen(source)
 
-            if "hello" in word or "hey shanana" in word or "shanana" in word or "are u up " in word or "wake up" in word:
+                word = recognizer.recognize_google(audio).lower()
+                print("Shanana thinks you said:", word)
 
-                speak("Hey Salik, how is your day going ")
+                if "hello" in word or "hey shanana" in word or "shanana" in word or "are u up" in word or "wake up" in word:
 
-                # Command listening
+                    speak("wel come back sir...")
+                    time.sleep(1.1)
+                    speak("congratulations our system is fully operational")
+
+                    active = True
+
+
+            # active mode 
+            else:
+
                 with sr.Microphone() as source:
                     print("Shanana active")
                     recognizer.adjust_for_ambient_noise(source, duration=0.5)
@@ -49,6 +60,7 @@ if __name__ == "__main__":
 
                 command = recognizer.recognize_google(audio).lower()
                 print("Command received:", command)
+
 
                 # NEWS ai
                 if "news" in command:
@@ -65,11 +77,13 @@ if __name__ == "__main__":
                         speak(title)
                         time.sleep(1.8)
 
-                # YOUTUBE
+
+                # YOUTUBE.?
                 elif "youtube" in command:
                     speak("Opening YouTube")
                     time.sleep(1)
                     wb.open("https://www.youtube.com")
+
 
                 # GOOGLE
                 elif "google" in command:
@@ -77,11 +91,17 @@ if __name__ == "__main__":
                     time.sleep(1)
                     wb.open("https://www.google.com")
 
+
                 # SHUTDOWN
                 elif "shutdown" in command:
                     speak("Shutting down, goodbye sir")
                     exit()
-                # let open ai handle the request
+
+
+                # SLEEP MODE COMMAND
+                elif "sleep" in command or "shut down" in command or "mute" in command:
+                    speak("Going back to sleep sir")
+                    active = False
 
 
         except sr.UnknownValueError:
