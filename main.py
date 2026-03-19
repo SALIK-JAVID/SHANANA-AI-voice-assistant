@@ -4,8 +4,17 @@ import pyttsx3 as pytt
 import time
 import requests
 
+# adding api to .env
+from dotenv import load_dotenv
+import os
+load_dotenv()
+# importing groq api
+from groq import Groq
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
 # News API key
-api_key = "329da15a5c9e4acba2c5f74bf8514bcb"
+api_key =  os.getenv("NEWS_API_KEY")
 url = f"https://newsapi.org/v2/everything?q=ai&apiKey={api_key}"
 
 # recognizer 
@@ -22,6 +31,19 @@ def speak(text):
     engine.runAndWait()
 
 
+# adding groq function in the code for general questions:
+def ask_ai(question):
+
+    response = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "system", "content": "You are Shanana, a helpful AI voice assistant."},
+            {"role": "user", "content": question}
+        ]
+    )
+
+    answer = response.choices[0].message.content
+    return answer
 active = False
 
 if __name__ == "__main__":
@@ -29,12 +51,12 @@ if __name__ == "__main__":
     speak("Hello I'm Shanana, your virtual A I assistant..... say shanana to wake me up")
 
     while True:
-        try:
+        try: 
 
             # slep mode
             if not active:
                 with sr.Microphone() as source:
-                    print("Say something!")
+                    print("Say something!")  
                     recognizer.adjust_for_ambient_noise(source, duration=0.5)
                     audio = recognizer.listen(source)
 
@@ -102,6 +124,10 @@ if __name__ == "__main__":
                 elif "sleep" in command or "shut down" in command or "mute" in command:
                     speak("Going back to sleep sir")
                     active = False
+                # general questions
+                else:
+                    answer = ask_ai(command)
+                    speak(answer)
 
 
         except sr.UnknownValueError:
