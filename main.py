@@ -37,7 +37,7 @@ def ask_ai(question):
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
-            {"role": "system", "content": "You are Shanana, a helpful AI voice assistant."},
+            {"role": "system", "content": "You are Shanana, a helpful AI voice assistant like Seri and Alexa, Always reply in 1-2 short sentences only"},
             {"role": "user", "content": question}
         ]
     )
@@ -115,7 +115,7 @@ if __name__ == "__main__":
 
 
                 # SHUTDOWN
-                elif "shutdown" in command:
+                elif "shut down" in command:
                     speak("Shutting down, goodbye sir")
                     exit()
 
