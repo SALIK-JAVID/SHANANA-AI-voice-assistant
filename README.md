@@ -54,6 +54,7 @@ NEWS_API_KEY=your_newsapi_key_here
 
 ```bash
 python3 main.py
+python main.py
 ```
 
 Say “shanana” to wake it up, then try: “news”, “youtube”, “google”, or ask any question.
